@@ -3,7 +3,8 @@
 <!-- Main Page Content and Sidebar -->
 
     <!-- Main Blog Content -->
-    <div class="large-8 columns">
+    {# <div class="large-8 columns"> #}
+    <div class="large-12 columns">
 
         <article>
             {% if record is defined %}
@@ -32,9 +33,9 @@
                     <p>{{ home.excerpt(500) }}</p>
                 {% endif %}
 
-                {% if home.link is defined and home.link is not empty %}
+                {# {% if home.link is defined and home.link is not empty %}
                     <a href="{{ home.link }}">Read more &raquo;</a>
-                {% endif %}
+                {% endif %} #}
 
                 {# Tip: If you're curious what all of the available fields of this
                    record contain, just use {{ print(home) }}, to print it all. #}
@@ -42,7 +43,7 @@
             {% else %}
                 <p>
                     {{ __('Content for home not found!') }} 
-                    {{ __("You should set 'homepage:' in your 'app/config/config.yml' to an existing record.") }}
+                    {{ __("You should set 'homepage:' in your 'app/config/config.yml' to an existing record. Make sure that the content is published, otherwise it will not be shown.") }}
                 </p>
             {% endif %}
         </article>
@@ -50,13 +51,14 @@
         <hr>
 
         <h4>{{ __('Latest entries') }}</h4>
-
+        
         {# Here we use 'setcontent' to set the variable 'records' to "entries/latest/6",
            which is shorthand for "the 6 latest records in Entries. Note that we are
            requesting multiple entries, so 'records' will be an array containing each
            of the entries. That's why we use the 'for' loop to iterate over them all. #}
-        {% setcontent records = "entries/latest/6" allowpaging %}
-        {% for record in records %}
+        {# {% setcontent records = "entries/latest/6" allowpaging %} #}
+        {% setcontent records = "investigation-reports/latest/12" allowpaging %}
+        {# {% for record in records %}
             <article>
 
                 {% if record.image!="" %}
@@ -75,7 +77,49 @@
 
             <hr>
 
-        {% endfor %}
+        {% endfor %} #}
+
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Customer</th>
+                    <th>Model No.</th>
+                    <th>Process</th>
+                    <th>Issue Type</th>
+                    <th>Issue Date</th>
+                    <th>Close Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td><a href="{{ record.link }}">{{ record.title }}</a></td>
+                    <td>
+                        {% set relatedrecords = record.related('customers') %}
+                            {% for related in relatedrecords %}
+                                {{ related.title }}<br>
+                            {%  endfor %}
+                    </td>
+                    <td>
+                        {% set relatedrecords = record.related('model_no') %}
+                            {% for related in relatedrecords %}
+                                {{ related.title }}<br>
+                            {%  endfor %}                        
+                    </td>
+                    <td>
+                        {% set relatedrecords = record.related('processes') %}
+                            {% for related in relatedrecords %}
+                                {{ related.title }}<br>
+                            {%  endfor %}                                                
+                    </td>
+                    <td>{{ record.issue_type|join(', ') }}</td>
+                    <td>{{ record.issue_date }}</td>
+                    <td>{{ record.close_date }}</td>
+                </tr>
+                {% endfor %}                
+            </tbody>
+        </table>
 
         {{ pager() }}
 
@@ -85,7 +129,7 @@
     <!-- End Main Content -->
     {# include the sidebar. The include tag can be used to break up your templates in logical parts,
        and re-use them across different templates/pages. #}
-    {% include '_aside.twig' %}
+    {# {% include '_aside.twig' %} #}
 
 <!-- End Main Content and Sidebar -->
 
